@@ -1,6 +1,7 @@
 package com.dev.mark.notes.ui.list_notes;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import com.dev.mark.notes.R;
 import com.dev.mark.notes.data.database.NoteDAO;
 import com.dev.mark.notes.domain.model.Note;
+import com.dev.mark.notes.ui.global.FullScrinPhotoActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListHolder> {
     public void onBindViewHolder(@NonNull final ListHolder viewHolder, int i) {
         File photoFile = NoteDAO.get(context).getPhotoFile(context, notes.get(i));
         viewHolder.bind(notes.get(i), photoFile);
+        setListenerForPhoto(viewHolder, photoFile);
+
         viewHolder.checkBox.setVisibility(isMultiChoice ? View.VISIBLE : View.GONE);
         viewHolder.checkBox.setChecked(choiceArray.indexOf(viewHolder.note) == -1 ? false : true);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +65,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListHolder> {
                 return true;
             }
         });
+    }
+
+    private void setListenerForPhoto(ListHolder holder, final File file) {
+        if (file.exists())
+            holder.photoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = FullScrinPhotoActivity.newIntent(context, file);
+                    context.startActivity(intent);
+                }
+            });
     }
 
     private void bindChoice(@NonNull ListHolder viewHolder) {

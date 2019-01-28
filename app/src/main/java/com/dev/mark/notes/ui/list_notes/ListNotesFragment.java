@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.dev.mark.notes.R;
@@ -27,6 +28,7 @@ import com.dev.mark.notes.domain.model.Note;
 import com.dev.mark.notes.ui.editNotes.EditNoteFragment;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -82,6 +84,38 @@ public class ListNotesFragment extends Fragment implements ListAdapter.Click {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.list_menu, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                listAdapter.notes = query(newText);
+                listAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                listAdapter.notes = notes;
+                listAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+    }
+
+    private List<Note> query(String query) {
+        List<Note> queryList = new ArrayList<>();
+        for (Note note : notes) {
+            if (note.getTitle().contains(query) || note.getTextNote().contains(query))
+                queryList.add(note);
+        }
+        return queryList;
     }
 
     @Nullable
@@ -122,9 +156,11 @@ public class ListNotesFragment extends Fragment implements ListAdapter.Click {
                 && (int) getArguments().getSerializable(ARG_VAR_USE) == REMINDER_LIST) {
             notes = NoteDAO.get(getContext()).getNotesReminder();
             getActivity().setTitle(R.string.list_reminders);
+            navigationView.setCheckedItem(R.id.reminder_notes);
         } else {
             getActivity().setTitle(R.string.app_name);
             notes = NoteDAO.get(getContext()).getNotes();
+            navigationView.setCheckedItem(R.id.all_notes);
         }
 
         listAdapter.notes = notes;

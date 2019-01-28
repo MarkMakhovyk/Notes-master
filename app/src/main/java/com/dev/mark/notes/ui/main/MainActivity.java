@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.transition.Fade;
 import android.view.MenuItem;
 
@@ -41,8 +42,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.layout_choice);
         setSupportActionBar(toolbar);
-        getWindow().setExitTransition(new Fade());
-        getWindow().setEnterTransition(new Fade());
+        getWindow().setExitTransition(new Explode());
+        getWindow().setEnterTransition(new Explode());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

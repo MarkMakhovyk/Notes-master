@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.widget.ImageView;
 
 import com.dev.mark.notes.R;
@@ -32,6 +33,8 @@ public class FullScrinPhotoActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setEnterTransition(new Fade());
+        getWindow().setExitTransition(new Fade());
         setContentView(R.layout.fragment_details_photo);
         file = (File) getIntent().getSerializableExtra(EXTRA_FILE);
 
